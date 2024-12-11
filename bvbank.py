@@ -109,10 +109,29 @@ class BVBank:
             print(f"New proxy: {self.proxies}")
     async def get_cookies(self):
         # Launch the browser
-        browser = await launch(headless=True)
+        http_proxy = self.proxies.get('http')
+        https_proxy = self.proxies.get('https')
+
+        # Extract proxy details (host, port, username, password)
+        # Assuming the format is: http://username:password@host:port
+        proxy_url = http_proxy or https_proxy  # Use either HTTP or HTTPS proxy
+        proxy_parts = proxy_url.replace('http://', '').split('@')
+        credentials, proxy_address = proxy_parts[0], proxy_parts[1]
+        proxy_username, proxy_password = credentials.split(':')
+        host, port = proxy_address.split(':')
+        browser = await launch(headless=True,        
+                               args=[
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            f'--proxy-server=http://{host}:{port}'  # Set proxy
+        ])
         page = await browser.newPage()
 
-        # Navigate to the URL
+        await page.authenticate({
+                'username': proxy_username,
+                'password': proxy_password
+            })
+
         await page.goto('https://digibank.bvbank.net.vn/login')
 
         # Wait for a specific element to appear (can replace 'body' with a more specific selector)
