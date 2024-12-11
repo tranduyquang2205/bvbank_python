@@ -237,7 +237,7 @@ class BVBank:
     async def login(self,relogin=False):
         if not relogin:
             balance_response = await self.get_balance(self.account_number)
-            if balance_response['code'] != 520:
+            if balance_response['code'] != 500:
                 return balance_response
             
         self.session = requests.Session()
@@ -364,7 +364,7 @@ class BVBank:
         except:
             self.is_login = False
             self.save_data()
-            return {'code':520 ,'success': False, 'message': 'Unknown Error!'} 
+            return {'code':500 ,'success': False, 'message': 'Unknown Error!','data':response.text} 
         # transactions =  self.extract_transaction_history(response.text)
         if  'response' in response:
             return {'code':200,'success': True, 'message': 'Thành công',
