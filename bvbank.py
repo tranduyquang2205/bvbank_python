@@ -135,31 +135,31 @@ class BVBank:
                     'username': proxy_username,
                     'password': proxy_password
                 })
+        try:
+            await page.goto('https://digibank.bvbank.net.vn/login')
 
-        await page.goto('https://digibank.bvbank.net.vn/login')
+            # Wait for a specific element to appear (can replace 'body' with a more specific selector)
+            await page.waitForSelector('body > div > main > div > section > div.content-wrap.sme-register-form > div > div > div:nth-child(1) > h2')
+            # Optionally, you can also wait for the network to be idle
+            # await page.waitForNavigation({'waitUntil': 'networkidle0'})  # Wait for the network to idle (no active connections)
 
-        # Wait for a specific element to appear (can replace 'body' with a more specific selector)
-        await page.waitForSelector('body > div > main > div > section > div.content-wrap.sme-register-form > div > div > div:nth-child(1) > h2')
-        # Optionally, you can also wait for the network to be idle
-        # await page.waitForNavigation({'waitUntil': 'networkidle0'})  # Wait for the network to idle (no active connections)
+            # Retrieve cookies
+            cookies = await page.cookies()
 
-        # Retrieve cookies
-        cookies = await page.cookies()
+            # Create a dictionary of cookie names and values
+            cookie_dict = {cookie['name']: cookie['value'] for cookie in cookies}
 
-        # Create a dictionary of cookie names and values
-        cookie_dict = {cookie['name']: cookie['value'] for cookie in cookies}
+            # Print the cookies for debugging
+            # print(cookies)  # This will print a list of cookies with all their details
 
-        # Print the cookies for debugging
-        # print(cookies)  # This will print a list of cookies with all their details
+            # Update the session cookies with the cookie_dict (name: value format)
+            self.session.cookies.update(cookie_dict)
+            return cookie_dict
 
-        # Update the session cookies with the cookie_dict (name: value format)
-        self.session.cookies.update(cookie_dict)
-
+        finally:
         # Close the browser
-        await browser.close()
-
-        # Return the cookie dictionary
-        return cookie_dict
+            await browser.close()
+            return cookie_dict        
 
     def extract_text_from_td(self,td_string):
         return re.sub(r"<[^>]*>", "", td_string).strip()
