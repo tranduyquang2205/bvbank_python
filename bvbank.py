@@ -342,7 +342,7 @@ class BVBank:
             #     file.write(response.text)
             self.is_login = False
             self.save_data()
-            return {'code':521 ,'success': False, 'message': 'Unknown Error!','data':response.text} 
+            return {'code':500 ,'success': False, 'message': 'Unknown Error!','data':response.text} 
 
 
     async def get_transactions(self,account_number,fromDate,toDate,latest=False):
