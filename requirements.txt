@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pydantic
+requests
+bs4
+lxml
+pyppeteer
+pycryptodome
