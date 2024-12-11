@@ -299,20 +299,23 @@ class BVBank:
         else:
             error_message = self.extract_error_message(response.text)
             print(error_message)
-            if 'vô hiệu hóa' in error_message:
-                return  {
-                        "success": False,
-                        "code": 449,
-                        "message": "Blocked account!",
-                        "details": error_message
-                    }
-            elif 'nhập sai tên đăng nhập hoặc mật khẩu' in error_message:
-                return {
-                        'success': False,
-                        'message': 'Đăng nhập không thành công!',
-                        'code': 444,
-                        "details": error_message
-                    }
+            if error_message:
+                if 'vô hiệu hóa' in error_message:
+                    return  {
+                            "success": False,
+                            "code": 449,
+                            "message": "Blocked account!",
+                            "details": error_message
+                        }
+                elif 'nhập sai tên đăng nhập hoặc mật khẩu' in error_message:
+                    return {
+                            'success': False,
+                            'message': 'Đăng nhập không thành công!',
+                            'code': 444,
+                            "details": error_message
+                        }
+            else:
+                return await self.login(relogin=True)
                 
         return None
 
