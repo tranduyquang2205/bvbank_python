@@ -108,6 +108,7 @@ class BVBank:
             }
             print(f"New proxy: {self.proxies}")
     async def get_cookies(self):
+        cookie_dict = {}
         # Launch the browser
         if self.proxies:
             http_proxy = self.proxies.get('http')
