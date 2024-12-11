@@ -88,7 +88,7 @@ class BVBank:
         page = await browser.newPage()
 
         # Navigate to the URL
-        await page.goto('https://digibank.bvbank.net.vn/login?type=cn')
+        await page.goto('https://digibank.bvbank.net.vn/login')
 
         # Wait for a specific element to appear (can replace 'body' with a more specific selector)
         await page.waitForSelector('body > div > main > div > section > div.content-wrap.sme-register-form > div > div > div:nth-child(1) > h2')
@@ -212,7 +212,7 @@ class BVBank:
             
         self.session = requests.Session()
         await self.get_cookies()
-        url = "https://digibank.bvbank.net.vn/login?type=cn"
+        url = "https://digibank.bvbank.net.vn/login"
         
         response = self.base_request_get(url)
         # with open("init_login.html", "w", encoding="utf-8") as file:
@@ -288,8 +288,7 @@ class BVBank:
             login = await self.login(relogin=True)
             return login
         response = self.base_request_get('https://digibank.bvbank.net.vn/home')
-        # with open("home.html", "w", encoding="utf-8") as file:
-        #     file.write(response.text)
+
         account_list = self.extract_accounts(response.text)
         if account_list:
             for account in account_list:
@@ -301,9 +300,11 @@ class BVBank:
                             }}
             return {'code':404,'success': False, 'message': 'account_number not found!'} 
         else:
+            # with open("home.html", "w", encoding="utf-8") as file:
+            #     file.write(response.text)
             self.is_login = False
             self.save_data()
-            return {'code':520 ,'success': False, 'message': 'Unknown Error!'} 
+            return {'code':521 ,'success': False, 'message': 'Unknown Error!','data':response.text} 
 
 
     async def get_transactions(self,account_number,fromDate,toDate,latest=False):
